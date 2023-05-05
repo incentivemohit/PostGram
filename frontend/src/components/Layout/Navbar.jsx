@@ -1,11 +1,15 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Menu from "../Utilities/UserMenu";
 import { Link } from "react-router-dom";
 import Search from "../Utilities/Search";
 import { Badge } from "@mui/material";
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
+import { PostContext } from "../PostContext";
 
-function Navbar({ handleNewPost }) {
+function Navbar({ handleNewPost ,handleNotifications}) {
+
+  const {Notification}=useContext(PostContext)
+
   return (
     <>
       <div className=" md:flex justify-between items-center py-2 shadow-md bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ">
@@ -23,9 +27,9 @@ function Navbar({ handleNewPost }) {
           <Search />
         </div>
         <div className="w-100 pr-2  md:items-center flex justify-end gap-2 items-center">
-          <div className="p-2  hover:bg-black hover:rounded-full">
+          <div className="p-2  hover:bg-black hover:rounded-full" onClick={()=>handleNotifications(true)}>
             <Badge
-              badgeContent={46}
+              badgeContent={Notification.length?Notification.length:"0"}
               color="primary"
               className="cursor-pointer  "
             >

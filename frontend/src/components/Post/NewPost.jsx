@@ -3,11 +3,14 @@ import { useState } from "react";
 import * as React from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import axios from "axios";
+import { PostContext } from "../PostContext";
 
 function NewPost({ handleNewPost }) {
   const [user, setUser] = useState({
     caption: "",
   });
+
+  const {setState}=React.useContext(PostContext)
 
   const handleChange = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
@@ -24,6 +27,7 @@ function NewPost({ handleNewPost }) {
           .post("/api/v1/post/newpost", { caption: user.caption })
           .then(() => {
             alert("Post Published");
+            setState(true)
             setUser({ caption: "" });
           })
           .catch((err) => console.log(err.message));

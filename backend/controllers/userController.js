@@ -36,9 +36,10 @@ const getAllUsers = async (req, res) => {
   return res.status(200).json({ data: users });
 };
 
+
 const signUp = async (req, res) => {
   const { name, email, password } = req.body;
-  console.log(req.body);
+
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await User.create({
@@ -88,7 +89,9 @@ const login = async (req, res) => {
           id: user._id,
           username: user.name,
           useremail: user.email,
-          token,
+          followers:user.followers,
+          following:user.following,
+          token
         },
       });
   } catch (error) {
@@ -109,18 +112,18 @@ const logout = async (req, res) => {
 
 const followUser = async (req, res) => {
   try {
-    const userToFollow = await User.findById(req.params.id);
-    const loggedInUser = await User.findById(req.user._id);
+    const userToFollow = await User.findById({_id:req.params.id});
+    const loggedInUser = await User.findById({_id:req.user._id});
 
     if (!userToFollow) {
       return res.status(404).json({ message: "user not found" });
     }
 
     if (loggedInUser.following.includes(userToFollow._id)) {
-      const loggedIndex = loggedInUser.likes.indexOf(userToFollow._id);
+      const loggedIndex = loggedInUser.following.indexOf(userToFollow._id);
       loggedInUser.following.splice(loggedIndex, 1);
-      const userFollowIndex = userToFollow.likes.indexOf(loggedInUser._id);
-      userToFollow.following.splice(userFollowIndex, 1);
+      const userFollowIndex = userToFollow.followers.indexOf(loggedInUser._id);
+      userToFollow.followers.splice(userFollowIndex, 1);
 
       await loggedInUser.save();
       await userToFollow.save();
@@ -128,6 +131,7 @@ const followUser = async (req, res) => {
     } else {
       loggedInUser.following.push(userToFollow._id);
       userToFollow.followers.push(loggedInUser._id);
+      userToFollow.Notifications.push(loggedInUser)
 
       await loggedInUser.save();
       await userToFollow.save();
@@ -138,4 +142,16 @@ const followUser = async (req, res) => {
   }
 };
 
-module.exports = { getUser, getAllUsers, signUp, login, logout, followUser };
+const notifications=async(req,res)=>{
+
+  try {
+    
+ const user=await User.findById({_id:req.user._id}).populate("Notifications")
+ return res.status(200).json({data:user.Notifications})
+  } catch (error) {
+    console.log(error.message)
+  }
+}
+
+
+module.exports = { getUser, getAllUsers, signUp, login, logout,notifications, followUser };

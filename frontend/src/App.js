@@ -16,15 +16,7 @@ function App() {
     <>
       <BrowserRouter>
         <Routes>
-          <Route
-            exact
-            path="/"
-            element={
-              <ProtectedRoute loggedIn={loggedIn}>
-                <Home />
-              </ProtectedRoute>
-            }
-          />
+         
           <Route
             exact
             path="/user/chats"
@@ -47,7 +39,15 @@ function App() {
           <Route exact path="/user/profile" element={<UserProfile />} />
           <Route exact path="/register" element={<Register />} />
           <Route exact path="/login" element={<Login />} />
-
+          <Route
+            exact
+            path="/"
+            element={
+              <ProtectedRoute loggedIn={loggedIn}>
+                <Home />
+              </ProtectedRoute>
+            }
+          />
           <Route exact path="*" element={<PageNotFound />} />
         </Routes>
       </BrowserRouter>

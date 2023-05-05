@@ -3,18 +3,20 @@ import React from "react";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
-import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import { useState } from "react";
 import SendIcon from "@mui/icons-material/Send";
 import ShareIcon from "@mui/icons-material/Share";
 import Comments from "../Utilities/Comments";
+import axios from "axios";
+import { PostContext } from "../PostContext";
 
-function Post() {
+function Post({data}) {
   const [like, setLike] = useState("black");
-  const [dislike, setdisLike] = useState("black");
   const [heart, setHeart] = useState("black");
   const [follow, setFollow] = useState("follow");
   const [viewComments, setViewComments] = useState(false);
+
+  const {setState}=React.useContext(PostContext)
 
   const handleClose = () => {
     setViewComments(false);
@@ -28,31 +30,44 @@ function Post() {
     }
   };
 
-  const handleLike = () => {
+  const handleLike =async() => {
+    
+setState(false)
     if (like === "black") {
-      setLike("blue");
+      await axios.get(`/api/v1/post/liked/${data._id}`).then((res)=>{
+        
+        setState(true)
+        setLike("blue");
+      }).catch((err)=>console.log(err.message))
+      
     } else if (like === "blue") {
-      setLike("black");
-    }
-  };
-  const handleDislike = () => {
-    if (dislike === "black") {
-      setdisLike("blue");
-    } else if (dislike === "blue") {
-      setdisLike("black");
+      await axios.get(`/api/v1/post/liked/${data._id}`).then((res)=>{
+       
+         setState(true)
+        setLike("black");
+      }).catch((err)=>console.log(err.message))
     }
   };
 
-  const handleFollow = () => {
+
+  const handleFollow = async() => {
+    setState(false)
     if (follow === "follow") {
-      setFollow("Unfollow");
+      await axios.get(`/api/v1/user/follow/${data.userId._id}`).then((res)=>{
+        setState(true)
+        setFollow("Unfollow");
+      }).catch((err)=>console.log(err.message))
+     
     } else if (follow === "Unfollow") {
-      setFollow("follow");
+      await axios.get(`/api/v1/user/follow/${data.userId._id}`).then((res)=>{
+        setState(true)
+        setFollow("follow");
+      }).catch((err)=>console.log(err.message))
     }
   };
   return (
     <>
-      <div className="card relative">
+      <div className="card relative" key={data.id}>
         <div className="card-body">
           <div className="post-top-left d-flex mb-2 align-items-center justify-content-between ">
             <div
@@ -66,7 +81,7 @@ function Post() {
                   alt=""
                 />
               </div>
-              <h6 className="mx-2">Mohit Kumar</h6>
+              <h6 className="mx-2">{data.userId.name}</h6>
             </div>
             <div className="post-top-right" style={{ cursor: "pointer" }}>
               <MoreVertIcon />
@@ -82,10 +97,7 @@ function Post() {
           </div>
 
           <p className="post-desc py-2">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita
-            facere optio illum nostrum quia sint vitae sequi unde! Laborum sed
-            et illo? Quos vel rem facilis praesentium fugit sunt qui Lorem ipsum
-            dolor sit amet
+            {data.caption}
           </p>
 
           <div className="flex justify-between items-center  mt-2">
@@ -93,28 +105,25 @@ function Post() {
               <li className="list-group-item cursor-pointer">
                 <ThumbUpIcon
                   style={{ color: `${like}` }}
-                  onClick={handleLike}
+                  onClick={()=>handleLike()}
                 />
+                
+                &nbsp;{data.likesAndDislike.length}
               </li>
-              <li className="list-group-item cursor-pointer">
-                <ThumbDownIcon
-                  style={{ color: `${dislike}` }}
-                  onClick={handleDislike}
-                />
-              </li>
+             
               <li className="list-group-item cursor-pointer">
                 <FavoriteIcon
                   style={{ color: `${heart}` }}
-                  onClick={handleFavourite}
+                  onClick={()=>handleFavourite()}
                 />
-              </li>{" "}
+              </li>
               <li className="list-group-item cursor-pointer">
                 <ShareIcon />
               </li>
             </ul>
             <button
               className="btn btn-outline-primary w-25"
-              onClick={handleFollow}
+              onClick={()=>handleFollow()}
             >
               {follow}
             </button>

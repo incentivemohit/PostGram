@@ -6,9 +6,11 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import ChatIcon from "@mui/icons-material/Chat";
 import { AuthContext } from "../AuthContext";
 
-function LeftSidebar({ handleNewPost }) {
-  const { logout, userInfo } = useContext(AuthContext);
 
+function LeftSidebar({ handleNewPost }) {
+  const {logout}=useContext(AuthContext)
+  const user=JSON.parse(localStorage.getItem('user'))
+console.log(user)
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -23,6 +25,7 @@ function LeftSidebar({ handleNewPost }) {
       })
       .catch((err) => console.log(err.message));
   };
+
   return (
     <>
       <div className="card">
@@ -33,13 +36,13 @@ function LeftSidebar({ handleNewPost }) {
             alt=""
           />
           <p className="text-xl my-2 cursor-pointer font-bold">
-            {userInfo.username}
+            {user.username}
           </p>
           <hr />
-          <h1 className="text-3xl">9</h1>
+          <h1 className="text-3xl">{user.followers.length}</h1>
           <h1 className="text-xl">Followers</h1>
           <hr />
-          <h1 className="text-3xl">23,990</h1>
+          <h1 className="text-3xl">{user.following.length}</h1>
           <h1 className="text-xl">Following</h1>
         </div>
 

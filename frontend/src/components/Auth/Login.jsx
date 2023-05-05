@@ -19,7 +19,9 @@ function Login() {
       if (email && password) {
         await login(email, password).then((res) => {
           if (res === 200) {
-            navigate("/");
+            setTimeout(() => {
+              navigate("/");
+            }, 1000);
           } else {
             setFalseAlert(true);
             setTimeout(() => {

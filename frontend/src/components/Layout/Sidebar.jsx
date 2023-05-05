@@ -2,6 +2,9 @@ import React from "react";
 import FriendList from "../Utilities/FriendList";
 
 function Sidebar() {
+
+  
+
   return (
     <>
       <div className="card p-2">

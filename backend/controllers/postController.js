@@ -27,7 +27,7 @@ const newPost = async (req, res) => {
 const getAllPosts = async (req, res) => {
   let allPosts;
   try {
-    allPosts = await Post.find({});
+    allPosts = await Post.find({}).populate("userId")
   } catch (error) {
     console.log(error.message);
   }
@@ -42,7 +42,7 @@ const getPost = async (req, res) => {
   let post;
 
   try {
-    post = await Post.findById(req.params.id);
+    post = await Post.findById({_id:req.params.id});
   } catch (error) {
     console.log(error.message);
   }
@@ -98,21 +98,26 @@ const deletePost = async (req, res) => {
 };
 
 const likeAndDislike = async (req, res) => {
+
   try {
-    const post = await Post.findById(req.params.id);
+    const post = await Post.findById({_id:req.params.id});
 
     if (!post) {
       return res.status(400).json({ message: "post not found" });
     }
 
-    if (post.likes.includes(req.user._id)) {
-      const index = post.likes.indexOf(req.user._id);
-      post.likes.splice(index, 1);
+    if (post.likesAndDislike.includes(req.user._id)) {
+      const index = post.likesAndDislike.indexOf(req.user._id);
+      post.likesAndDislike.splice(index, 1);
       await post.save();
       return res.status(200).json({ message: "post unliked" });
     } else {
-      post.likes.push(req.user._id);
-      await post.save();
+      post.likesAndDislike.push(req.user._id);
+    await post.save(); 
+
+    const user=await  User.findById({_id:post.userId})
+    user.Notifications.push(req.user._id)
+    await user.save()
       return res.status(200).json({ message: "post liked" });
     }
   } catch (error) {

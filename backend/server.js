@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 9000;
 app.use(express.json());
 app.use(cookieParser());
 
-app.use("/api/v1/user", userRouter);
+app.use("/api/v1/user/", userRouter);
 app.use("/api/v1/post", postRouter);
 
 app.listen(PORT, (err) => {
