@@ -1,12 +1,16 @@
-import React, { useState } from "react";
+import React, {  useState } from "react";
 import Navbar from "../Navbar";
 import ActiveFriendList from "../../Utilities/ActiveFriendList";
 import NewPost from "../../Post/NewPost";
 import ChatSidebar from "./ChatSidebar";
 import ChatContainer from "./ChatContainer";
 
+
+
 function ChatLayout() {
+  
   const [state, setState] = useState(false);
+
 
   const handleNewPost = (value) => {
     setState(value);
@@ -22,7 +26,7 @@ function ChatLayout() {
           </div>
 
           <div className="w-4/5 flex flex-col gap-2">
-            <ChatContainer />
+            <ChatContainer/>
           </div>
         </div>
         {state ? <NewPost handleNewPost={handleNewPost} /> : ""}
